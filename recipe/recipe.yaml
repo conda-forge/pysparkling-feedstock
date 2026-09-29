@@ -1,19 +1,18 @@
 schema_version: 1
 
 context:
-  name: pysparkling
-  version: "0.6.1"
+  version: 0.6.2
 
 package:
-  name: ${{ name|lower }}
+  name: pysparkling
   version: ${{ version }}
 
 source:
-  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/pysparkling-${{ version }}.tar.gz
-  sha256: 361ca9a11273b6be2dc5d1aff5a9ef228388ca1768244caff02b132a7102a538
+  url: https://github.com/svenkreiss/pysparkling/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 5117d49ef1c8b5561ed9a09da33b1efb6952bf6146d15d7e7d33626bcb2429c4
 
 build:
-  number: 1
+  number: 0
   noarch: python
   script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
@@ -21,13 +20,13 @@ requirements:
   host:
     - pip
     - python ${{ python_min }}.*
+    - setuptools
   run:
-    - boto >=2.36.0
-    - future >=0.15
     - python >=${{ python_min }}
     - python-dateutil >=2.8.0
     - pytz >=2019.3
     - requests >=2.6.0
+    - boto >=2.36.0
 
 tests:
   - python:
@@ -38,6 +37,18 @@ tests:
       python_version:
         - ${{ python_min }}.*
         - '*'
+  - script:
+      - pytest -vvv pysparkling/tests
+    requirements:
+      run:
+        - pytest
+        - python ${{ python_min }}.*
+        - tornado
+        - cloudpickle
+    files:
+      source:
+        - LICENSE
+        - pysparkling/tests
 
 about:
   summary: Pure Python implementation of the Spark RDD interface.
