@@ -1,0 +1,50 @@
+schema_version: 1
+
+context:
+  name: pysparkling
+  version: "0.6.1"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/pysparkling-${{ version }}.tar.gz
+  sha256: 361ca9a11273b6be2dc5d1aff5a9ef228388ca1768244caff02b132a7102a538
+
+build:
+  number: 1
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python ${{ python_min }}.*
+  run:
+    - boto >=2.36.0
+    - future >=0.15
+    - python >=${{ python_min }}
+    - python-dateutil >=2.8.0
+    - pytz >=2019.3
+    - requests >=2.6.0
+
+tests:
+  - python:
+      imports:
+        - pysparkling
+        - pysparkling.fileio
+      pip_check: true
+      python_version:
+        - ${{ python_min }}.*
+        - '*'
+
+about:
+  summary: Pure Python implementation of the Spark RDD interface.
+  license: Apache-2.0
+  license_file: LICENSE
+  homepage: https://github.com/svenkreiss/pysparkling
+
+extra:
+  recipe-maintainers:
+    - cdesouza21
